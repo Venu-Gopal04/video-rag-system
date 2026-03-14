@@ -6,285 +6,60 @@
   <title>Video RAG Query System</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #0f1117;
-      color: #e0e0e0;
-      min-height: 100vh;
-    }
-
-    header {
-      background: linear-gradient(135deg, #1a1f2e, #16213e);
-      padding: 20px 40px;
-      border-bottom: 1px solid #2a2f3e;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    header .logo {
-      width: 40px; height: 40px;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-    }
-
+    body { font-family: 'Segoe UI', sans-serif; background: #0f1117; color: #e0e0e0; min-height: 100vh; }
+    header { background: linear-gradient(135deg, #1a1f2e, #16213e); padding: 20px 40px; border-bottom: 1px solid #2a2f3e; display: flex; align-items: center; gap: 14px; }
+    .logo { width: 40px; height: 40px; background: linear-gradient(135deg, #6366f1, #8b5cf6); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
     header h1 { font-size: 22px; font-weight: 600; color: #fff; }
-    header p  { font-size: 13px; color: #8899aa; margin-top: 2px; }
-
-    .container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 28px;
-    }
-
-    .card {
-      background: #1a1f2e;
-      border: 1px solid #2a2f3e;
-      border-radius: 16px;
-      padding: 28px;
-    }
-
-    .card h2 {
-      font-size: 16px;
-      font-weight: 600;
-      color: #a78bfa;
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* Upload area */
-    .upload-area {
-      border: 2px dashed #3a3f50;
-      border-radius: 12px;
-      padding: 40px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+    header p { font-size: 13px; color: #8899aa; margin-top: 2px; }
+    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; display: flex; flex-direction: column; gap: 28px; }
+    .card { background: #1a1f2e; border: 1px solid #2a2f3e; border-radius: 16px; padding: 28px; }
+    .card h2 { font-size: 16px; font-weight: 600; color: #a78bfa; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+    .upload-area { border: 2px dashed #3a3f50; border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; }
     .upload-area:hover { border-color: #6366f1; background: #1e2236; }
-    .upload-area.dragging { border-color: #8b5cf6; background: #1e2236; }
-
     .upload-icon { font-size: 40px; margin-bottom: 12px; }
     .upload-area p { color: #8899aa; font-size: 14px; margin-bottom: 14px; }
     .upload-area input { display: none; }
-
-    .btn {
-      padding: 10px 22px;
-      border-radius: 8px;
-      border: none;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
-      color: white;
-    }
+    .btn { padding: 10px 22px; border-radius: 8px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
     .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    /* Progress */
     .progress-wrap { display: none; margin-top: 18px; }
-    .progress-label {
-      font-size: 13px; color: #8899aa;
-      margin-bottom: 8px;
-      display: flex; justify-content: space-between;
-    }
-    .progress-bar {
-      height: 6px;
-      background: #2a2f3e;
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #6366f1, #8b5cf6);
-      border-radius: 99px;
-      width: 0%;
-      transition: width 0.4s ease;
-      animation: shimmer 1.5s infinite;
-      background-size: 200% 100%;
-    }
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    .steps {
-      display: flex;
-      gap: 8px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-    .step {
-      padding: 5px 12px;
-      border-radius: 99px;
-      font-size: 12px;
-      background: #2a2f3e;
-      color: #8899aa;
-      transition: all 0.3s;
-    }
-    .step.active  { background: #6366f1; color: white; }
-    .step.done    { background: #059669; color: white; }
-
-    /* Status badge */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 99px;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 16px;
-    }
-    .status-badge.ready   { background: #052e16; color: #4ade80; border: 1px solid #166534; }
+    .progress-label { font-size: 13px; color: #8899aa; margin-bottom: 8px; display: flex; justify-content: space-between; }
+    .progress-bar { height: 6px; background: #2a2f3e; border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #8b5cf6); border-radius: 99px; width: 0%; transition: width 0.4s ease; }
+    .steps { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    .step { padding: 5px 12px; border-radius: 99px; font-size: 12px; background: #2a2f3e; color: #8899aa; transition: all 0.3s; }
+    .step.active { background: #6366f1; color: white; }
+    .step.done { background: #059669; color: white; }
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 99px; font-size: 13px; font-weight: 500; margin-bottom: 16px; }
+    .status-badge.ready { background: #052e16; color: #4ade80; border: 1px solid #166534; }
     .status-badge.waiting { background: #1e1b4b; color: #a78bfa; border: 1px solid #3730a3; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-
-    /* Query */
-    .query-box {
-      display: flex;
-      gap: 10px;
-      margin-top: 6px;
-    }
-    .query-box input {
-      flex: 1;
-      padding: 12px 16px;
-      background: #0f1117;
-      border: 1px solid #2a2f3e;
-      border-radius: 10px;
-      color: #e0e0e0;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
+    .query-box { display: flex; gap: 10px; margin-top: 6px; }
+    .query-box input { flex: 1; padding: 12px 16px; background: #0f1117; border: 1px solid #2a2f3e; border-radius: 10px; color: #e0e0e0; font-size: 15px; outline: none; transition: border-color 0.2s; }
     .query-box input:focus { border-color: #6366f1; }
     .query-box input::placeholder { color: #4a5568; }
-
-    /* Example queries */
-    .examples {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .example-chip {
-      padding: 5px 12px;
-      background: #1e2236;
-      border: 1px solid #2a2f3e;
-      border-radius: 99px;
-      font-size: 12px;
-      color: #8899aa;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+    .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .example-chip { padding: 5px 12px; background: #1e2236; border: 1px solid #2a2f3e; border-radius: 99px; font-size: 12px; color: #8899aa; cursor: pointer; transition: all 0.2s; }
     .example-chip:hover { border-color: #6366f1; color: #a78bfa; }
-
-    /* Answer */
     .answer-box { display: none; margin-top: 20px; }
-
-    .answer-header {
-      font-size: 13px;
-      color: #8899aa;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .answer-text {
-      background: #0f1117;
-      border: 1px solid #2a2f3e;
-      border-radius: 10px;
-      padding: 18px;
-      font-size: 15px;
-      line-height: 1.7;
-      color: #e0e0e0;
-      white-space: pre-wrap;
-    }
-
-    /* Timestamps */
-    .timestamps {
-      margin-top: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .ts-label {
-      font-size: 12px;
-      color: #8899aa;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .ts-card {
-      background: #0f1117;
-      border: 1px solid #2a2f3e;
-      border-radius: 8px;
-      padding: 12px 16px;
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-    .ts-badge {
-      background: #1e1b4b;
-      color: #a78bfa;
-      border: 1px solid #3730a3;
-      padding: 3px 10px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      white-space: nowrap;
-      min-width: 52px;
-      text-align: center;
-    }
-    .ts-desc {
-      font-size: 13px;
-      color: #8899aa;
-      line-height: 1.5;
-    }
-    .ts-score {
-      margin-left: auto;
-      font-size: 12px;
-      color: #4ade80;
-      white-space: nowrap;
-    }
-
-    .alert {
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-top: 12px;
-    }
+    .answer-header { font-size: 13px; color: #8899aa; margin-bottom: 10px; }
+    .answer-text { background: #0f1117; border: 1px solid #2a2f3e; border-radius: 10px; padding: 18px; font-size: 15px; line-height: 1.7; color: #e0e0e0; white-space: pre-wrap; }
+    .timestamps { margin-top: 16px; }
+    .ts-label { font-size: 12px; color: #8899aa; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .ts-card { background: #0f1117; border: 1px solid #2a2f3e; border-radius: 8px; padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+    .ts-badge { background: #1e1b4b; color: #a78bfa; border: 1px solid #3730a3; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; white-space: nowrap; min-width: 52px; text-align: center; }
+    .ts-desc { font-size: 13px; color: #8899aa; line-height: 1.5; }
+    .ts-score { margin-left: auto; font-size: 12px; color: #4ade80; white-space: nowrap; }
+    .alert { padding: 12px 16px; border-radius: 8px; font-size: 14px; margin-top: 12px; }
     .alert-success { background: #052e16; color: #4ade80; border: 1px solid #166534; }
-    .alert-error   { background: #450a0a; color: #f87171; border: 1px solid #991b1b; }
-    .alert-info    { background: #0c0a3e; color: #a78bfa; border: 1px solid #3730a3; }
-
-    .spinner {
-      display: inline-block;
-      width: 16px; height: 16px;
-      border: 2px solid #3a3f50;
-      border-top-color: #8b5cf6;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
+    .alert-error { background: #450a0a; color: #f87171; border: 1px solid #991b1b; }
+    .alert-info { background: #0c0a3e; color: #a78bfa; border: 1px solid #3730a3; }
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #3a3f50; border-top-color: #8b5cf6; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-
 <header>
   <div class="logo">🎥</div>
   <div>
@@ -294,27 +69,20 @@
 </header>
 
 <div class="container">
-
-  <!-- Upload Card -->
   <div class="card">
     <h2>📤 Upload Video</h2>
-
     <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
       <div class="upload-icon">🎬</div>
       <p>Drag & drop a video file here, or click to browse</p>
       <p style="font-size:12px; color:#4a5568;">Supports MP4, AVI, MOV, MKV</p>
       <input type="file" id="fileInput" accept=".mp4,.avi,.mov,.mkv" onchange="handleFileSelect(this)"/>
     </div>
-
     <div id="selectedFile" style="display:none; margin-top:14px;">
       <div class="alert alert-info" id="fileNameLabel"></div>
       <div style="margin-top:12px; text-align:center;">
-        <button class="btn btn-primary" id="uploadBtn" onclick="uploadVideo()">
-          🚀 Process Video
-        </button>
+        <button class="btn btn-primary" id="uploadBtn" onclick="uploadVideo()">🚀 Process Video</button>
       </div>
     </div>
-
     <div class="progress-wrap" id="progressWrap">
       <div class="progress-label">
         <span id="progressLabel">Processing...</span>
@@ -328,29 +96,19 @@
         <div class="step" id="step4">4. Ready to query</div>
       </div>
     </div>
-
     <div id="uploadResult"></div>
   </div>
 
-  <!-- Query Card -->
   <div class="card">
     <h2>🔍 Query Your Video</h2>
-
     <div id="statusBadge" class="status-badge waiting">
       <div class="dot"></div>
       <span>Waiting for video to be processed...</span>
     </div>
-
     <div class="query-box">
-      <input
-        type="text"
-        id="queryInput"
-        placeholder="e.g. Show me all instances of forklift near-misses"
-        onkeydown="if(event.key==='Enter') submitQuery()"
-      />
+      <input type="text" id="queryInput" placeholder="e.g. Show me all instances of forklift near-misses" onkeydown="if(event.key==='Enter') submitQuery()"/>
       <button class="btn btn-primary" id="queryBtn" onclick="submitQuery()">Ask</button>
     </div>
-
     <div class="examples">
       <span class="example-chip" onclick="setQuery('Show me all forklift activity')">🚛 Forklift activity</span>
       <span class="example-chip" onclick="setQuery('Who is not wearing a helmet?')">⛑️ Missing helmet</span>
@@ -358,32 +116,27 @@
       <span class="example-chip" onclick="setQuery('Show me all workers near machinery')">⚙️ Workers near machinery</span>
       <span class="example-chip" onclick="setQuery('Any unauthorized access detected?')">🚫 Unauthorized access</span>
     </div>
-
     <div class="answer-box" id="answerBox">
       <div class="answer-header">🤖 AI Answer</div>
       <div class="answer-text" id="answerText"></div>
-
       <div class="timestamps" id="timestampsSection">
         <div class="ts-label">Relevant frames found</div>
         <div id="timestampsList"></div>
       </div>
     </div>
   </div>
-
 </div>
 
 <script>
   let selectedFile = null;
 
-  // Drag & drop
   const uploadArea = document.getElementById('uploadArea');
-  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragging'); });
-  uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragging'));
+  uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = '#6366f1'; });
+  uploadArea.addEventListener('dragleave', () => uploadArea.style.borderColor = '#3a3f50');
   uploadArea.addEventListener('drop', e => {
     e.preventDefault();
-    uploadArea.classList.remove('dragging');
-    const file = e.dataTransfer.files[0];
-    if (file) prepareFile(file);
+    uploadArea.style.borderColor = '#3a3f50';
+    if (e.dataTransfer.files[0]) prepareFile(e.dataTransfer.files[0]);
   });
 
   function handleFileSelect(input) {
@@ -406,7 +159,7 @@
     document.getElementById('progressPct').textContent = pcts[stepNum] + '%';
     for (let i = 1; i <= 4; i++) {
       const el = document.getElementById('step' + i);
-      if (i < stepNum)  el.className = 'step done';
+      if (i < stepNum) el.className = 'step done';
       else if (i === stepNum) el.className = 'step active';
       else el.className = 'step';
     }
@@ -414,7 +167,6 @@
 
   async function uploadVideo() {
     if (!selectedFile) return;
-
     const uploadBtn = document.getElementById('uploadBtn');
     const progressWrap = document.getElementById('progressWrap');
     const uploadResult = document.getElementById('uploadResult');
@@ -430,7 +182,6 @@
 
     try {
       const res = await fetch('/upload-video', { method: 'POST', body: formData });
-
       if (!res.ok) {
         const err = await res.json();
         uploadResult.innerHTML = `<div class="alert alert-error" style="margin-top:16px;">❌ ${err.detail}</div>`;
@@ -438,13 +189,10 @@
         uploadBtn.innerHTML = '🚀 Process Video';
         return;
       }
-
-      // Start polling for progress
-      uploadResult.innerHTML = `<div class="alert alert-info" style="margin-top:16px;">⏳ Processing video in background... please wait</div>`;
+      uploadResult.innerHTML = `<div class="alert alert-info" style="margin-top:12px;">⏳ Processing video in background... please wait</div>`;
       pollProcessingStatus();
-
     } catch (e) {
-      uploadResult.innerHTML = `<div class="alert alert-error" style="margin-top:16px;">❌ Upload failed. Is the server running?</div>`;
+      uploadResult.innerHTML = `<div class="alert alert-error" style="margin-top:16px;">❌ Connection error. Is the server running?</div>`;
       uploadBtn.disabled = false;
       uploadBtn.innerHTML = '🚀 Process Video';
     }
@@ -453,138 +201,70 @@
   async function pollProcessingStatus() {
     const uploadResult = document.getElementById('uploadResult');
     const uploadBtn = document.getElementById('uploadBtn');
-
     const interval = setInterval(async () => {
       try {
         const res = await fetch('/processing-status');
         const data = await res.json();
-
-        // Update progress bar
         document.getElementById('progressFill').style.width = data.progress + '%';
         document.getElementById('progressPct').textContent = data.progress + '%';
         document.getElementById('progressLabel').textContent = data.step || 'Processing...';
-
         if (data.progress < 40) setStep(1);
         else if (data.progress < 80) setStep(2);
         else if (data.progress < 100) setStep(3);
-
         if (data.error) {
           clearInterval(interval);
-          uploadResult.innerHTML = `<div class="alert alert-error" style="margin-top:16px;">❌ Error: ${data.error}</div>`;
+          uploadResult.innerHTML = `<div class="alert alert-error" style="margin-top:16px;">❌ ${data.error}</div>`;
           uploadBtn.disabled = false;
           uploadBtn.innerHTML = '🚀 Process Video';
         }
-
         if (data.done) {
           clearInterval(interval);
           setStep(4);
-          uploadResult.innerHTML = `
-            <div class="alert alert-success" style="margin-top:16px;">
-              ✅ Video processed successfully!<br/>
-              <small>Frames extracted: ${data.frames_extracted} | Indexed: ${data.frames_indexed}</small>
-            </div>`;
+          uploadResult.innerHTML = `<div class="alert alert-success" style="margin-top:16px;">✅ Video processed successfully!<br/><small>Frames extracted: ${data.frames_extracted} | Indexed: ${data.frames_indexed}</small></div>`;
           document.getElementById('statusBadge').className = 'status-badge ready';
           document.getElementById('statusBadge').innerHTML = '<div class="dot"></div><span>Video indexed — ready to query!</span>';
           uploadBtn.disabled = false;
           uploadBtn.innerHTML = '🚀 Process Video';
         }
       } catch(e) {}
-    }, 3000); // Poll every 3 seconds
-  }
-    if (!selectedFile) return;
-
-    const uploadBtn = document.getElementById('uploadBtn');
-    const progressWrap = document.getElementById('progressWrap');
-    const uploadResult = document.getElementById('uploadResult');
-
-    uploadBtn.disabled = true;
-    uploadBtn.innerHTML = '<span class="spinner"></span> Processing...';
-    progressWrap.style.display = 'block';
-    uploadResult.innerHTML = '';
-
-    // Simulate step progression while waiting
-    setStep(1);
-    const stepTimer = setInterval(() => {
-      const current = document.querySelectorAll('.step.done').length + 1;
-      if (current <= 3) setStep(current);
-    }, 8000);
-
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
-    try {
-      const res = await fetch('/upload-video', { method: 'POST', body: formData });
-      clearInterval(stepTimer);
-
-      if (res.ok) {
-        const data = await res.json();
-        setStep(4);
-        document.getElementById('progressFill').style.width = '100%';
-        document.getElementById('progressPct').textContent = '100%';
-        uploadResult.innerHTML = `
-          <div class="alert alert-success" style="margin-top:16px;">
-            ✅ ${data.message}<br/>
-            <small>Frames extracted: ${data.frames_extracted} | Indexed: ${data.frames_indexed}</small>
-          </div>`;
-        // Update status badge
-        document.getElementById('statusBadge').className = 'status-badge ready';
-        document.getElementById('statusBadge').innerHTML = '<div class="dot"></div><span>Video indexed — ready to query!</span>';
-      } else {
-        const err = await res.json();
-        uploadResult.innerHTML = `<div class="alert alert-error" style="margin-top:16px;">❌ Error: ${err.detail}</div>`;
-      }
-    } catch (e) {
-      clearInterval(stepTimer);
-      uploadResult.innerHTML = `<div class="alert alert-error" style="margin-top:16px;">❌ Connection error. Is the server running?</div>`;
-    }
-
-    uploadBtn.disabled = false;
-    uploadBtn.innerHTML = '🚀 Process Video';
+    }, 3000);
   }
 
   async function submitQuery() {
     const query = document.getElementById('queryInput').value.trim();
     if (!query) return;
-
     const queryBtn = document.getElementById('queryBtn');
     const answerBox = document.getElementById('answerBox');
     const answerText = document.getElementById('answerText');
     const timestampsList = document.getElementById('timestampsList');
-
     queryBtn.disabled = true;
     queryBtn.innerHTML = '<span class="spinner"></span>';
     answerText.textContent = 'Searching video and generating answer...';
     answerBox.style.display = 'block';
     timestampsList.innerHTML = '';
-
     try {
       const res = await fetch('/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query })
       });
-
       const data = await res.json();
       answerText.textContent = data.answer;
-
       if (data.relevant_frames && data.relevant_frames.length > 0) {
         timestampsList.innerHTML = data.relevant_frames.map(f => `
           <div class="ts-card">
             <div class="ts-badge">${f.timestamp}</div>
             <div class="ts-desc">${f.description.substring(0, 120)}...</div>
             <div class="ts-score">${(f.relevance_score * 100).toFixed(0)}% match</div>
-          </div>
-        `).join('');
+          </div>`).join('');
       }
     } catch (e) {
-      answerText.textContent = 'Error connecting to server. Make sure it is running.';
+      answerText.textContent = 'Error connecting to server.';
     }
-
     queryBtn.disabled = false;
     queryBtn.innerHTML = 'Ask';
   }
 
-  // Check status on load
   async function checkStatus() {
     try {
       const res = await fetch('/status');
