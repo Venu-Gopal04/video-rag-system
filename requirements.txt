@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+opencv-python-headless
+Pillow
+chromadb
+groq
+sentence-transformers
+transformers
+torch
+torchvision
+requests
+python-multipart
+python-dotenv
